@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  telegramId  BigInt   @unique
+  username    String?
+  points      Int      @default(0)
+  visitCount  Int      @default(0)
+  lastVisit   DateTime?
+  isVIP       Boolean  @default(false)
+  isAdmin     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  gameHistory GameHistory[]
+  visits      Visit[]
+  coupons     Coupon[]
+}
+
+model Visit {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  visitDate DateTime @default(now())
+}
+
+model GameHistory {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  gameType  String
+  betType   String
+  betAmount Int
+  result    String
+  payout    Int
+  dice      String
+  createdAt DateTime @default(now())
+}
+
+model Coupon {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  code      String   @unique
+  value     Int
+  status    String   @default("active")
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+}
