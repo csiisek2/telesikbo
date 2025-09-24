@@ -23,7 +23,6 @@ export async function playSicBoHandler(ctx: CallbackQueryContext<Context>) {
     return;
   }
 
-  await ctx.answerCallbackQuery();
   await ctx.editMessageText(`💰 배팅 금액을 선택하세요:`, {
     reply_markup: {
       inline_keyboard: [
@@ -45,13 +44,12 @@ export async function playSicBoHandler(ctx: CallbackQueryContext<Context>) {
       ],
     },
   });
+  await ctx.answerCallbackQuery();
 }
 
 export async function selectAmountHandler(ctx: CallbackQueryContext<Context>) {
   const match = ctx.match as RegExpMatchArray;
   const amount = parseInt(match[1]);
-
-  await ctx.answerCallbackQuery();
 
   try {
     await ctx.editMessageText(`💰 ${amount}P 배팅\n\n🎲 배팅 타입을 선택하세요:`, {
@@ -69,6 +67,7 @@ export async function selectAmountHandler(ctx: CallbackQueryContext<Context>) {
         ],
       },
     });
+    await ctx.answerCallbackQuery();
   } catch (error: any) {
     if (!error.message?.includes('message is not modified')) {
       throw error;
@@ -89,7 +88,7 @@ export async function betHandler(ctx: CallbackQueryContext<Context>) {
   const betAmount = parseInt(match[2]);
 
   try {
-    await ctx.answerCallbackQuery();
+    ctx.answerCallbackQuery().catch(() => {});
 
     const username = ctx.from.first_name || ctx.from.username || '익명';
 
