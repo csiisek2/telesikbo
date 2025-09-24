@@ -23,28 +23,34 @@ export async function playSicBoHandler(ctx: CallbackQueryContext<Context>) {
     return;
   }
 
-  await ctx.editMessageText(`💰 배팅 금액을 선택하세요:`, {
-    reply_markup: {
-      inline_keyboard: [
-        [
-          { text: '100P', callback_data: 'amount_100' },
-          { text: '200P', callback_data: 'amount_200' },
-          { text: '300P', callback_data: 'amount_300' },
-          { text: '400P', callback_data: 'amount_400' },
-          { text: '500P', callback_data: 'amount_500' },
+  try {
+    await ctx.editMessageText(`💰 배팅 금액을 선택하세요:`, {
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: '100P', callback_data: 'amount_100' },
+            { text: '200P', callback_data: 'amount_200' },
+            { text: '300P', callback_data: 'amount_300' },
+            { text: '400P', callback_data: 'amount_400' },
+            { text: '500P', callback_data: 'amount_500' },
+          ],
+          [
+            { text: '600P', callback_data: 'amount_600' },
+            { text: '700P', callback_data: 'amount_700' },
+            { text: '800P', callback_data: 'amount_800' },
+            { text: '900P', callback_data: 'amount_900' },
+            { text: '1000P', callback_data: 'amount_1000' },
+          ],
+          [{ text: '« 뒤로가기', callback_data: 'back_to_menu' }],
         ],
-        [
-          { text: '600P', callback_data: 'amount_600' },
-          { text: '700P', callback_data: 'amount_700' },
-          { text: '800P', callback_data: 'amount_800' },
-          { text: '900P', callback_data: 'amount_900' },
-          { text: '1000P', callback_data: 'amount_1000' },
-        ],
-        [{ text: '« 뒤로가기', callback_data: 'back_to_menu' }],
-      ],
-    },
-  });
-  await ctx.answerCallbackQuery();
+      },
+    });
+    await ctx.answerCallbackQuery();
+  } catch (error: any) {
+    if (!error.message?.includes('message is not modified')) {
+      throw error;
+    }
+  }
 }
 
 export async function selectAmountHandler(ctx: CallbackQueryContext<Context>) {
