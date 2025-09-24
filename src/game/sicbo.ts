@@ -26,41 +26,28 @@ const PAYOUTS: Record<BetType, number> = {
 function rollDice(winRate: number, betType: BetType): SicBoResult {
   const shouldWin = Math.random() < winRate;
 
-  let dice: [number, number, number];
+  let targetSum: number;
 
   if (shouldWin) {
     switch (betType) {
       case 'big':
-        dice = [
-          Math.floor(Math.random() * 3) + 4,
-          Math.floor(Math.random() * 3) + 4,
-          Math.floor(Math.random() * 3) + 4,
-        ];
+        targetSum = Math.floor(Math.random() * 7) + 11;
         break;
       case 'small':
-        dice = [
-          Math.floor(Math.random() * 3) + 1,
-          Math.floor(Math.random() * 3) + 1,
-          Math.floor(Math.random() * 3) + 1,
-        ];
+        targetSum = Math.floor(Math.random() * 7) + 4;
         break;
       case 'odd':
-        const oddSum = Math.floor(Math.random() * 4) * 2 + 5;
-        dice = generateDiceForSum(oddSum);
+        targetSum = [5, 7, 9, 11, 13, 15][Math.floor(Math.random() * 6)];
         break;
       case 'even':
-        const evenSum = Math.floor(Math.random() * 4) * 2 + 6;
-        dice = generateDiceForSum(evenSum);
+        targetSum = [6, 8, 10, 12, 14, 16][Math.floor(Math.random() * 6)];
         break;
     }
   } else {
-    dice = [
-      Math.floor(Math.random() * 6) + 1,
-      Math.floor(Math.random() * 6) + 1,
-      Math.floor(Math.random() * 6) + 1,
-    ];
+    targetSum = Math.floor(Math.random() * 15) + 3;
   }
 
+  const dice = generateDiceForSum(targetSum);
   const sum = dice.reduce((a, b) => a + b, 0);
 
   return {
@@ -73,7 +60,20 @@ function rollDice(winRate: number, betType: BetType): SicBoResult {
 
 function generateDiceForSum(targetSum: number): [number, number, number] {
   const d1 = Math.floor(Math.random() * 6) + 1;
-  const d2 = Math.floor(Math.random() * Math.min(6, targetSum - d1 - 1)) + 1;
+  const remaining = targetSum - d1;
+
+  const minD2 = Math.max(1, remaining - 6);
+  const maxD2 = Math.min(6, remaining - 1);
+
+  if (minD2 > maxD2) {
+    return [
+      Math.floor(Math.random() * 6) + 1,
+      Math.floor(Math.random() * 6) + 1,
+      Math.floor(Math.random() * 6) + 1,
+    ];
+  }
+
+  const d2 = Math.floor(Math.random() * (maxD2 - minD2 + 1)) + minD2;
   const d3 = targetSum - d1 - d2;
 
   if (d3 < 1 || d3 > 6) {
