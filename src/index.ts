@@ -50,35 +50,43 @@ bot.catch((err) => {
   console.error('Error:', err);
 });
 
-bot.start({
-  onStart: async () => {
-    console.log('🤖 Bot started successfully!');
-    console.log('📋 Commands:');
-    console.log('  /start - 시작하기');
-    console.log('  /쿠폰 - 내 쿠폰 조회');
-    console.log('  /관리자쿠폰 - 전체 쿠폰 조회 (관리자)');
-    console.log('  /사용 <코드> - 쿠폰 사용 처리 (관리자)');
+async function startBot() {
+  await bot.api.deleteWebhook({ drop_pending_updates: true });
+  console.log('🧹 Cleared webhook and pending updates');
 
-    await bot.api.setMyCommands([
-      { command: 'start', description: '시작하기' },
-      { command: 'coupon', description: '내 쿠폰 조회' },
-    ], { scope: { type: 'all_private_chats' } });
+  bot.start({
+    drop_pending_updates: true,
+    onStart: async () => {
+      console.log('🤖 Bot started successfully!');
+      console.log('📋 Commands:');
+      console.log('  /start - 시작하기');
+      console.log('  /쿠폰 - 내 쿠폰 조회');
+      console.log('  /관리자쿠폰 - 전체 쿠폰 조회 (관리자)');
+      console.log('  /사용 <코드> - 쿠폰 사용 처리 (관리자)');
 
-    if (config.adminTelegramId && !isNaN(config.adminTelegramId)) {
       await bot.api.setMyCommands([
         { command: 'start', description: '시작하기' },
         { command: 'coupon', description: '내 쿠폰 조회' },
-        { command: 'users', description: '회원 목록 (관리자)' },
-        { command: 'coupons', description: '전체 쿠폰 조회 (관리자)' },
-        { command: 'use', description: '쿠폰 사용 처리 (관리자)' },
-        { command: 'give', description: '포인트 지급 (관리자)' },
-        { command: 'take', description: '포인트 회수 (관리자)' },
-      ], { scope: { type: 'chat', chat_id: String(config.adminTelegramId) } });
-    }
+      ], { scope: { type: 'all_private_chats' } });
 
-    console.log('✅ Bot commands configured');
-  },
-});
+      if (config.adminTelegramId && !isNaN(config.adminTelegramId)) {
+        await bot.api.setMyCommands([
+          { command: 'start', description: '시작하기' },
+          { command: 'coupon', description: '내 쿠폰 조회' },
+          { command: 'users', description: '회원 목록 (관리자)' },
+          { command: 'coupons', description: '전체 쿠폰 조회 (관리자)' },
+          { command: 'use', description: '쿠폰 사용 처리 (관리자)' },
+          { command: 'give', description: '포인트 지급 (관리자)' },
+          { command: 'take', description: '포인트 회수 (관리자)' },
+        ], { scope: { type: 'chat', chat_id: String(config.adminTelegramId) } });
+      }
+
+      console.log('✅ Bot commands configured');
+    },
+  });
+}
+
+startBot();
 
 process.once('SIGINT', () => bot.stop());
 process.once('SIGTERM', () => bot.stop());
