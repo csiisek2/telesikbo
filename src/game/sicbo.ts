@@ -44,7 +44,20 @@ function rollDice(winRate: number, betType: BetType): SicBoResult {
         break;
     }
   } else {
-    targetSum = Math.floor(Math.random() * 15) + 3;
+    switch (betType) {
+      case 'big':
+        targetSum = Math.floor(Math.random() * 7) + 4;
+        break;
+      case 'small':
+        targetSum = Math.floor(Math.random() * 7) + 11;
+        break;
+      case 'odd':
+        targetSum = [6, 8, 10, 12, 14, 16][Math.floor(Math.random() * 6)];
+        break;
+      case 'even':
+        targetSum = [5, 7, 9, 11, 13, 15][Math.floor(Math.random() * 6)];
+        break;
+    }
   }
 
   const dice = generateDiceForSum(targetSum);
