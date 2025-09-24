@@ -23,17 +23,36 @@ const PAYOUTS: Record<BetType, number> = {
   even: 2,
 };
 
-function rollDice(winRate: number): SicBoResult {
+function rollDice(winRate: number, betType: BetType): SicBoResult {
   const shouldWin = Math.random() < winRate;
 
   let dice: [number, number, number];
 
   if (shouldWin) {
-    dice = [
-      Math.floor(Math.random() * 3) + 4,
-      Math.floor(Math.random() * 3) + 4,
-      Math.floor(Math.random() * 3) + 4,
-    ];
+    switch (betType) {
+      case 'big':
+        dice = [
+          Math.floor(Math.random() * 3) + 4,
+          Math.floor(Math.random() * 3) + 4,
+          Math.floor(Math.random() * 3) + 4,
+        ];
+        break;
+      case 'small':
+        dice = [
+          Math.floor(Math.random() * 3) + 1,
+          Math.floor(Math.random() * 3) + 1,
+          Math.floor(Math.random() * 3) + 1,
+        ];
+        break;
+      case 'odd':
+        const oddSum = Math.floor(Math.random() * 4) * 2 + 5;
+        dice = generateDiceForSum(oddSum);
+        break;
+      case 'even':
+        const evenSum = Math.floor(Math.random() * 4) * 2 + 6;
+        dice = generateDiceForSum(evenSum);
+        break;
+    }
   } else {
     dice = [
       Math.floor(Math.random() * 6) + 1,
@@ -52,6 +71,22 @@ function rollDice(winRate: number): SicBoResult {
   };
 }
 
+function generateDiceForSum(targetSum: number): [number, number, number] {
+  const d1 = Math.floor(Math.random() * 6) + 1;
+  const d2 = Math.floor(Math.random() * Math.min(6, targetSum - d1 - 1)) + 1;
+  const d3 = targetSum - d1 - d2;
+
+  if (d3 < 1 || d3 > 6) {
+    return [
+      Math.floor(Math.random() * 6) + 1,
+      Math.floor(Math.random() * 6) + 1,
+      Math.floor(Math.random() * 6) + 1,
+    ];
+  }
+
+  return [d1, d2, d3];
+}
+
 export function getWinRate(isVIP: boolean): number {
   return isVIP ? config.winRates.vip : config.winRates.normal;
 }
@@ -62,7 +97,7 @@ export function playSicBo(
   isVIP: boolean
 ): GameResult {
   const winRate = getWinRate(isVIP);
-  const result = rollDice(winRate);
+  const result = rollDice(winRate, betType);
 
   let won = false;
   switch (betType) {
