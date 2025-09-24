@@ -127,4 +127,4 @@ npm run db:studio  # Prisma Studio 실행
 
 - [grammY 문서](https://grammy.dev/)
 - [Telegram Bot API](https://core.telegram.org/bots/api)
-- [Prisma 문서](https://www.prisma.io/docs)
+- [Prisma 문서](https://www.prisma.io/docs)# Force rebuild
