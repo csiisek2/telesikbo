@@ -52,21 +52,28 @@ export async function selectAmountHandler(ctx: CallbackQueryContext<Context>) {
   const amount = parseInt(match[1]);
 
   await ctx.answerCallbackQuery();
-  await ctx.editMessageText(`💰 ${amount}P 배팅\n\n🎲 배팅 타입을 선택하세요:`, {
-    reply_markup: {
-      inline_keyboard: [
-        [
-          { text: '📈 대(11-17)', callback_data: `bet_big_${amount}` },
-          { text: '📉 소(4-10)', callback_data: `bet_small_${amount}` },
+
+  try {
+    await ctx.editMessageText(`💰 ${amount}P 배팅\n\n🎲 배팅 타입을 선택하세요:`, {
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: '📈 대(11-17)', callback_data: `bet_big_${amount}` },
+            { text: '📉 소(4-10)', callback_data: `bet_small_${amount}` },
+          ],
+          [
+            { text: '🔢 홀', callback_data: `bet_odd_${amount}` },
+            { text: '🔢 짝', callback_data: `bet_even_${amount}` },
+          ],
+          [{ text: '« 뒤로가기', callback_data: 'play_sicbo' }],
         ],
-        [
-          { text: '🔢 홀', callback_data: `bet_odd_${amount}` },
-          { text: '🔢 짝', callback_data: `bet_even_${amount}` },
-        ],
-        [{ text: '« 뒤로가기', callback_data: 'play_sicbo' }],
-      ],
-    },
-  });
+      },
+    });
+  } catch (error: any) {
+    if (!error.message?.includes('message is not modified')) {
+      throw error;
+    }
+  }
 }
 
 const BET_TYPE_KOREAN: Record<BetType, string> = {
