@@ -1,12 +1,11 @@
 import { CommandContext, Context } from 'grammy';
 import { getAllUsers, addPoints, removePoints } from '../../services/admin.service';
 import { getUser } from '../../services/user.service';
+import { config } from '../../config/env';
 
 export async function usersCommand(ctx: CommandContext<Context>) {
   try {
-    const admin = await getUser(ctx.from!.id);
-
-    if (!admin?.isAdmin) {
+    if (ctx.from!.id !== config.adminTelegramId) {
       await ctx.reply('❌ 관리자 권한이 없습니다.');
       return;
     }
@@ -38,9 +37,7 @@ export async function usersCommand(ctx: CommandContext<Context>) {
 
 export async function givePointsCommand(ctx: CommandContext<Context>) {
   try {
-    const admin = await getUser(ctx.from!.id);
-
-    if (!admin?.isAdmin) {
+    if (ctx.from!.id !== config.adminTelegramId) {
       await ctx.reply('❌ 관리자 권한이 없습니다.');
       return;
     }
@@ -75,9 +72,7 @@ export async function givePointsCommand(ctx: CommandContext<Context>) {
 
 export async function takePointsCommand(ctx: CommandContext<Context>) {
   try {
-    const admin = await getUser(ctx.from!.id);
-
-    if (!admin?.isAdmin) {
+    if (ctx.from!.id !== config.adminTelegramId) {
       await ctx.reply('❌ 관리자 권한이 없습니다.');
       return;
     }
