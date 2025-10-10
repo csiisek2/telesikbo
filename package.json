@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "ts-node src/index.ts",
     "build": "prisma generate && tsc",
-    "start": "prisma db push && node dist/index.js",
+    "start": "prisma db push && ts-node scripts/setup-admin.ts && node dist/index.js",
+    "setup-admin": "ts-node scripts/setup-admin.ts",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
     "db:studio": "prisma studio"
