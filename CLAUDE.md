@@ -1,4 +1,8 @@
-# 텔레그램 식보 게임 봇 기술 스택
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+# 텔레그램 식보 게임 봇
 
 ## ✅ 기술적 검증 완료 사항
 
